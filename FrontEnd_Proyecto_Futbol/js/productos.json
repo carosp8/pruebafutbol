@@ -1,0 +1,52 @@
+
+/*
+const { createApp
+} = Vue
+
+createApp({
+  data() {
+    return {
+      nombre: '',
+      precio: '',
+      stock: '',
+      imagen: '',
+      descripcion: '',
+      url: 'https: //grupo222.pythonanywhere.com/productos',  // URL de la API en PythonAnywhere
+    }
+  },
+  methods: {
+    grabar() {
+      // Construir el objeto de producto a partir de los datos del formulario
+      const producto = {
+        nomprod: this.nombre,
+        precio: parseFloat(this.precio),
+        stock: parseInt(this.stock),
+        imagen: this.imagen,
+        descrip: this.descripcion,
+      }
+      // Enviar los datos a la API usando fetch
+      fetch(this.url,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(producto)
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Error en la solicitud');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Producto guardado:', data);
+        // Aquí se puede agregar cualquier lógica adicional después de guardar el producto
+      })
+      .catch(error => {
+        console.error('Error al guardar el producto:', error);
+        alert('Error al guardar el producto: ' + error.message); // Muestra un mensaje de alerta con el mensaje de error
+      });
+    }
+  }
+*/

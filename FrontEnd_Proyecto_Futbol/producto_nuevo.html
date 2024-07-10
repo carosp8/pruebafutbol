@@ -1,0 +1,128 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <title>Producto Nuevo</title>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Bootstrap CSS v5.2.1 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+
+  <style>
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block; /* Asegura que cada etiqueta esté en una línea nueva */
+      margin-bottom: 5px; /* Espacio debajo de cada etiqueta */
+    }
+
+    .form-group input {
+      width: 100%; /* Opcional: asegura que los campos de entrada ocupen todo el ancho disponible */
+    }
+  </style>
+
+</head>
+
+<body>
+  <header id="header">
+    <!-- Navbar u otro contenido del header -->
+  </header>
+  <main>
+    <div class="container" id="app">
+      <form style="background-color: aliceblue; margin: 10px auto; width: 400px; padding: 20px;">
+        <h1>Alta de Producto</h1>
+        <div class="form-group">
+          <label for="nombre">Nombre</label>
+          <input type="text" name="nombre" id="nombre" v-model="nombre">
+        </div>
+        <div class="form-group">
+          <label for="precio">Precio</label>
+          <input type="number" name="precio" id="precio" v-model="precio">
+        </div>
+        <div class="form-group">
+          <label for="stock">Stock</label>
+          <input type="number" name="stock" id="stock" v-model="stock">
+        </div>
+        <div class="form-group">
+          <label for="imagen">Imagen</label>
+          <input type="text" name="imagen" id="imagen" v-model="imagen">
+          <img width="100" :src="imagen" alt="">
+        </div>
+        <div class="form-group">
+          <label for="descripcion">Descripción</label>
+          <input type="text" name="descripcion" id="descripcion" v-model="descripcion">
+        </div>
+        <button type="button" class="btn btn-success" @click="grabar">Grabar</button>
+      </form>
+    </div>
+  </main>
+  <footer>
+    <!-- Footer u otro contenido del footer -->
+  </footer>
+  <!-- Bootstrap JavaScript Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+    integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
+    integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz"
+    crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <script>
+    const { createApp } = Vue;
+
+    createApp({
+      data() {
+        return {
+          nombre: '',
+          precio: '',
+          stock: '',
+          imagen: '',
+          descripcion: '',
+          url: 'https://grupo222.pythonanywhere.com/productos',  // URL de la API en PythonAnywhere
+        }
+      },
+      methods: {
+        grabar() {
+          // Construir el objeto de producto a partir de los datos del formulario
+          const producto = {
+            nomprod: this.nombre,
+            precio: parseFloat(this.precio),
+            stock: parseInt(this.stock),
+            imagen: this.imagen,
+            descrip: this.descripcion,
+          }
+
+          // Enviar los datos a la API usando fetch
+          fetch(this.url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(producto)
+          })
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Error en la solicitud');
+              }
+              return response.json();
+            })
+            .then(data => {
+              console.log('Producto guardado:', data);
+              // Aquí se puede agregar cualquier lógica adicional después de guardar el producto
+            })
+            .catch(error => {
+              console.error('Error al guardar el producto:', error);
+              alert('Error al guardar el producto: ' + error.message); // Muestra un mensaje de alerta con el mensaje de error
+            });
+        }
+      }
+    }).mount('#app');
+  </script>
+</body>
+
+</html>

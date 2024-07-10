@@ -1,0 +1,152 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modificar Producto</title>
+    <link rel="stylesheet" href="./css/estilo.css">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/3e248bbdf2.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <header>
+        <nav class="nav">
+            <a href="index.html" class="logo"> <img class="logo1" src="./img/logo1.png" alt="logo"></a>
+            <button class="boton">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            
+            <li class="nav-menu-item">
+                <a class="nav-menu-admin" target="_blank">ADMINISTRADOR</a>
+            </li>
+
+            <ul class="nav-menu ">
+
+                <li class="nav-menu-item">
+                    <a class="nav-menu-link" href="producto_nuevo.html" target="_blank">NUEVO PRODUCTO</a>
+                </li>
+
+                <li class="nav-menu-item">
+                    <a class="nav-menu-link" href="turnos.html" target="_blank">TURNOS</a>
+                </li>
+                <li class="nav-menu-item">
+                    <a class="nav-menu-link" href="index.html#ubicacion" target="_blank">Ubicación</a>
+                </li>
+                <li class="nav-menu-item">
+                    <a class="nav-menu-link" href="index.html#nuestras-canchas" target="_blank">Nuestras canchas</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div class="container">
+            <h1>Modificar Producto</h1>
+            <form id="formModificar" @submit.prevent="editarProducto">
+                <div class="form-group">
+                    <label for="nomprod">Producto:</label>
+                    <input type="text" id="nomprod" v-model="producto.nomprod" required>
+                </div>
+                <div class="form-group">
+                    <label for="imagen">Imagen URL:</label>
+                    <input type="text" id="imagen" v-model="producto.imagen" required>
+                </div>
+                <div class="form-group">
+                    <label for="descrip">Descripción:</label>
+                    <textarea id="descrip" v-model="producto.descrip" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="precio">Precio:</label>
+                    <input type="number" id="precio" v-model="producto.precio" required>
+                </div>
+                <div class="form-group">
+                    <label for="stock">Stock:</label>
+                    <input type="number" id="stock" v-model="producto.stock" required>
+                </div>
+                <button type="submit">Guardar Cambios</button>
+            </form>
+        </div>
+    </main>
+    
+    <div id="footer-placeholder"></div>
+    <script defer src="./js/loadFooter.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="./js/json.js"></script>
+    <script>
+        const { createApp } = Vue;
+
+        createApp({
+            data() {
+                return {
+                    url: "https://grupo222.pythonanywhere.com/productos",
+                    producto: {
+                        id: '',
+                        nomprod: '',
+                        precio: 0,
+                        stock: 0,
+                        imagen: '',
+                        descrip: ''
+                    }
+                }
+            },
+            methods: {
+                async fetchData() {
+                    try {
+                        const response = await fetch(this.url);
+                        if (!response.ok) {
+                            throw new Error('Error al cargar los productos');
+                        }
+                        const datos = await response.json();
+                        // Obtener el ID del producto de la URL
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const idProducto = urlParams.get('id');
+                        // Encontrar el producto por ID
+                        const productoSeleccionado = datos.find(p => p.id === parseInt(idProducto));
+                        if (productoSeleccionado) {
+                            this.producto.id = productoSeleccionado.id;
+                            this.producto.nomprod = productoSeleccionado.nomprod;
+                            this.producto.precio = productoSeleccionado.precio;
+                            this.producto.stock = productoSeleccionado.stock;
+                            this.producto.imagen = productoSeleccionado.imagen;
+                            this.producto.descrip = productoSeleccionado.descrip;
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
+                },
+                async editarProducto() {
+                    try {
+                        const response = await fetch(`${this.url}/${this.producto.id}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                nomprod: this.producto.nomprod,
+                                precio: this.producto.precio,
+                                stock: this.producto.stock,
+                                imagen: this.producto.imagen,
+                                descrip: this.producto.descrip
+                            })
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('Error al actualizar el producto');
+                        }
+
+                        alert('Producto actualizado correctamente');
+                        // Redirigir a la página de administración de productos
+                        window.location.href = 'admin_productos.html';
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('Error al actualizar el producto');
+                    }
+                }
+            },
+            mounted() {
+                this.fetchData(); // Llama a fetchData al montar el componente
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
